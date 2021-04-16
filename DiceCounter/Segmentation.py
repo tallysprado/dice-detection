@@ -18,9 +18,10 @@ def image_with_contours(image):
     )
     for c in cnts:
         x, y, w, h = cv2.boundingRect(c)
+        
         if w > 40:
             new_img = out[y:y+h, x:x+w]
-
+            print(w, h)
             #draw dots counts
             dots, img = BlobDetector.count_dots(new_img)
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -30,7 +31,6 @@ def image_with_contours(image):
             lineType = 2
             cv2.putText(
                 out, str(len(dots)), bottomLeft, font, fontScale, fontColor, lineType
-            )            
-            
+            )      
             cv2.rectangle(out, (x, y), (x+w, y+h), (255, 0, 0), 1)
     return out

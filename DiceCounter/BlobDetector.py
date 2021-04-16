@@ -23,10 +23,10 @@ def count_dots(image):
     params.minInertiaRatio = 0.55 # 1 is round, 0 is anywhat 
     params.maxInertiaRatio = 3.4028234663852886e+38 # infinity again
 
-    params.minThreshold = 0 # from where to start filtering the image
+    params.minThreshold = 50 # from where to start filtering the image
     params.maxThreshold = 255.0 # where to end filtering the image
     params.thresholdStep = 5 # steps to go through
-    params.minDistBetweenBlobs = 3.0 # avoid overlapping blobs. must be bigger than 0. Highly depending on image resolution! 
+    params.minDistBetweenBlobs = 2 # avoid overlapping blobs. must be bigger than 0. Highly depending on image resolution! 
     params.minRepeatability = 2
     
     detector = cv2.SimpleBlobDetector_create(params)
