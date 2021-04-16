@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from DiceCounter import BlobDetector
+from DiceCounter import Utils
 
 def threshold(img, value):
     out = img.copy()
@@ -24,6 +25,7 @@ def image_with_contours(image):
             print(w, h)
             #draw dots counts
             dots, img = BlobDetector.count_dots(new_img)
+            Utils.show(img, 'dice')
             font = cv2.FONT_HERSHEY_SIMPLEX
             bottomLeft = (x,y)
             fontScale = 1
