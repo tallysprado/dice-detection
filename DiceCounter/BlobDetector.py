@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 from sklearn import cluster
-
+from DiceCounter import Segmentation
+from DiceCounter import Utils
 
 def get_dice_from_blobs(blobs):
     X = []
@@ -16,13 +17,42 @@ def get_dice_from_blobs(blobs):
         return num_dice
     else:
         return None
+def count_dots2(image, redTrigger):
+    params = cv2.SimpleBlobDetector_Params()
+
+    params.minThreshold = 150 #165
+    params.maxThreshold = 255
+    params.blobColor = 255
+
+    if redTrigger:
+        params.blobColor = 0
+        image = Segmentation.threshold(image, 150)
+        image = cv2.blur(image, (3,3))
+        kernel = np.ones((5,5), np.uint8)
+        image = cv2.erode(image, kernel, iterations=1)
+        #Utils.show(image, 'thresh')
+    params.filterByArea = True
+    params.minArea = 20
+    params.minDistBetweenBlobs = 2
+    params.filterByColor = True
+    
+    params.thresholdStep = 5
+    detector = cv2.SimpleBlobDetector_create(params)
+    keypoints = detector.detect(image)
+    img_with_keypoints = cv2.drawKeypoints(
+        image, keypoints, np.array([]), (255, 0, 0),
+        cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
+    )
+   
+    
+    return keypoints, img_with_keypoints
 
 def count_dots(image):
     params = cv2.SimpleBlobDetector_Params()
     params.filterByColor = True
     params.blobColor = 255
     params.filterByArea = True
-    params.minArea = 20
+    params.minArea = 1
     params.maxArea = 100
 
     # disable the default settings
