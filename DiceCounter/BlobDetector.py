@@ -4,7 +4,16 @@ from sklearn import cluster
 from DiceCounter import Segmentation
 from DiceCounter import Utils
 
-def get_dice_from_blobs(blobs):
+def get_dice_from_blobs(blobs, image):
+    """Função para obter dados a partir dos blobs detectados
+
+    Args:
+        blobs {integer}: coordenadas X e Y de retorno da função detect 
+        image {matrix}: imagem onde será desenhado os blobs obtidos
+
+    Returns:
+        [type]: [description]
+    """
     X = []
     for b in blobs:
         position = b.pt
@@ -12,11 +21,37 @@ def get_dice_from_blobs(blobs):
             X.append(position)
     X = np.asarray(X)
     if len(X)>0:
-        clustering = cluster.DBSCAN(eps=40, min_samples=0).fit(X)
+        clustering = cluster.DBSCAN(eps=35, min_samples=0).fit(X)
         num_dice = max(clustering.labels_) + 1
-        return num_dice
+
+        dice = []
+
+        for i in range(num_dice):
+            X_dice = X[clustering.labels_==i]
+            centroid_dice = np.mean(X_dice, axis=0)   
+            position = (int(centroid_dice[0]), int(centroid_dice[1]))
+            image = cv2.circle(image, position , 27, (255,0,0), 2)
+            cv2.putText(
+                image, str(len(X_dice)), position, cv2.FONT_HERSHEY_PLAIN, 2,
+                (255,0,0), 2
+            )
+        return num_dice, image
     else:
-        return None
+        return None, image
+        
+def count_by_blobs(filtered_image):
+    params = cv2.SimpleBlobDetector_Params()
+    params.blobColor = 0
+    params.minDistBetweenBlobs = 1
+    detector = cv2.SimpleBlobDetector_create(params)
+    keypoints = detector.detect(filtered_image)
+    img_with_keypoints = cv2.drawKeypoints(
+        filtered_image, keypoints, np.array([]), (255, 0, 0),
+        cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
+    )
+
+    return keypoints, img_with_keypoints
+
 def count_dots2(image, redTrigger):
     params = cv2.SimpleBlobDetector_Params()
 
