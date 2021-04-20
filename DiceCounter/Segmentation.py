@@ -57,6 +57,7 @@ def get_dices_using_contours(image):
     cnts, hier = cv2.findContours(
         canny.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE
     )
+    array_dices = []
     for c in cnts:
         x, y, w, h = cv2.boundingRect(c)
         if w > 40:
@@ -64,6 +65,7 @@ def get_dices_using_contours(image):
             r, g, b = cv2.split(new_img)
             blurred = cv2.blur(r, (3,3))
             dots, img = BlobDetector.count_dots_in_single_dice(blurred)
+            array_dices.append(img)
             font = cv2.FONT_HERSHEY_SIMPLEX
             bottomLeft = (x,y)
             fontScale = 1
@@ -73,7 +75,7 @@ def get_dices_using_contours(image):
                 out, str(len(dots)), bottomLeft, font, fontScale, fontColor, lineType
             )      
             cv2.rectangle(out, (x, y), (x+w, y+h), (255, 0, 0), 1)
-    return out
+    return out, array_dices
 
 def get_dices(image):
     """Esta função apenas decide qual método de detecção será usado
@@ -86,14 +88,22 @@ def get_dices(image):
         image (matrix): imagem original
     """
     if isRedImage(image):
-        dices = get_dices_using_contours(image)
+        dices, array_dices = get_dices_using_contours(image)
         cv2.imshow('dados3.png',dices)
+        for i, image in enumerate(array_dices):
+            cv2.imshow(str(i), image)
+            cv2.moveWindow(str(i), 400,400)
+            cv2.waitKey(0)
+            cv2.destroyWindow(str(i))
+
     else:
         dices = applyFilters(image)
         keypoints, image_blobs = BlobDetector.count_by_blobs(dices)
         num, marked_image = BlobDetector.get_dice_from_blobs(
             keypoints, image)
         cv2.imshow('dados2.jpg', marked_image)
+        cv2.moveWindow('dados2.jpg', 400,400)
+
     cv2.waitKey(0)
     cv2.destroyAllWindows()
         

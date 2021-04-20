@@ -5,7 +5,8 @@ from DiceCounter import Segmentation
 
 def get_dice_from_blobs(blobs, image):
     """Função para obter dados a partir dos blobs detectados
-    Esta função foi utilizada 
+    Esta função foi utilizada para contar os pontos e depois 
+    localizar os dados por clusterização
 
     Args:
         blobs {integer}: coordenadas X e Y de retorno da função detect 
@@ -38,6 +39,16 @@ def get_dice_from_blobs(blobs, image):
         return None, image
         
 def count_by_blobs(filtered_image):
+    """Esta função será utilizada apenas em dados2.jpg
+    
+    Args:
+        filtered_image (Matrix): Imagem com fundo branco e apenas os pontos pretos referentes aos dados
+
+    Returns:
+        keypoints: coordenadas de cada ponto da face
+        img_with_keypoints: Utilizado para debugging, imagem com os contornos dos pontos desenhados
+        
+    """
     params = cv2.SimpleBlobDetector_Params()
     params.blobColor = 0
     params.minDistBetweenBlobs = 1
@@ -47,7 +58,7 @@ def count_by_blobs(filtered_image):
         filtered_image, keypoints, np.array([]), (255, 0, 0),
         cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
     )
-
+    cv2.imshow('image_with_keypoints', img_with_keypoints)
     return keypoints, img_with_keypoints
 
 def count_dots_in_single_dice(image):
@@ -80,4 +91,5 @@ def count_dots_in_single_dice(image):
         image, keypoints, np.array([]), (255, 0, 0),
         cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS
     )
+    
     return keypoints, img_with_keypoints
