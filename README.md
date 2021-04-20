@@ -1,7 +1,7 @@
 <p align="center">
  <a href="#objetivo">Objetivo</a> •
  <a href="#demonstracao">Demonstração</a> • 
- <a href="#filtros">Filtros</a> • 
+ <a href="#filtros">Filtros</a>
 </p>
 
 ### Detectando e contando os dados 
