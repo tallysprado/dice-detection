@@ -17,6 +17,7 @@ python3 example.py
 ![image](https://user-images.githubusercontent.com/19524848/115444601-27ad7e00-a1eb-11eb-8f8e-54543f95c263.png)
 
 ### Filtros
+- Resize irá diminuir o tamanho apenas da primeira imagem para conter dentro dos parâmetros da detecção de blobs
 - Blur removerá o ruído de brilho
 - Threshold é utilizado para remover informações indesejadas
 - Erode maximizará informações úteis
