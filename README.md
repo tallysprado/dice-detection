@@ -1,7 +1,7 @@
 <p align="center">
  <a href="#objetivo">Objetivo</a> •
  <a href="#demonstracao">Demonstração</a> • 
- <a href="#filtering">_Filtering_</a> • 
+ <a href="#filtros">Filtros</a> • 
 <a href="#autor">Autor</a>
 </p>
 
@@ -17,7 +17,7 @@ python3 example.py
 ![image](https://user-images.githubusercontent.com/19524848/115444560-195f6200-a1eb-11eb-944e-ce2669ca2cf7.png)
 ![image](https://user-images.githubusercontent.com/19524848/115444601-27ad7e00-a1eb-11eb-8f8e-54543f95c263.png)
 
-### Tecnologias
+### Filtros
 - Blur removerá o ruído de brilho
 - Threshold é utilizado para remover informações indesejadas
 - Erode maximizará informações úteis
