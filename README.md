@@ -5,7 +5,7 @@
 </p>
 
 ### Detectando e contando os dados 
-O arquivo example.py utiliza OpenCV para localizar os dados e reconhecer sua face.
+O arquivo example.py utiliza OpenCV para localizar os dados e reconhecer suas faces.
 
 ### Demonstração
 Dentro do diretório execute
