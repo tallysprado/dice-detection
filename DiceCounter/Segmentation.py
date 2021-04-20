@@ -14,7 +14,9 @@ def isRedImage(image):
         False: se o valor da intensidade dos pixels vermelhos for abaixo de 200
     """
     r, g, b = cv2.split(image)
-    if np.median(r)>200:
+    media = np.median(r)
+    print(media)
+    if media>205:
         return True
     else:
         return False
@@ -77,7 +79,7 @@ def get_dices_using_contours(image):
             cv2.rectangle(out, (x, y), (x+w, y+h), (255, 0, 0), 1)
     return out, array_dices
 
-def get_dices(image):
+def get_dices(image, image1=False):
     """Esta função apenas decide qual método de detecção será usado
     Se irá separar os dados para serem detectados por imagem: isRedImage true
     Se irá detectar os dados a partir dos pontos: isRedImage false
@@ -85,24 +87,47 @@ def get_dices(image):
     isRedImage é o ruído da terceira imagem que apresenta um plano de fundo com tonalidade branca
 
     Args:
+        image1 (boolean): informa apenas se a imagem é referente à dados1.jpg ou não, este parâmetro é opcional
         image (matrix): imagem original
     """
-    if isRedImage(image):
-        dices, array_dices = get_dices_using_contours(image)
-        cv2.imshow('dados3.png',dices)
-        for i, image in enumerate(array_dices):
-            cv2.imshow(str(i), image)
-            cv2.moveWindow(str(i), 400,400)
-            cv2.waitKey(0)
-            cv2.destroyWindow(str(i))
-
-    else:
-        dices = applyFilters(image)
-        keypoints, image_blobs = BlobDetector.count_by_blobs(dices)
+    if image1:
+        no_filtering = image.copy()
+        scale_percent = 30
+        w = int(image.shape[1] * scale_percent /100)
+        h = int(image.shape[0] * scale_percent /100)
+        resized = cv2.resize(image, (w,h), interpolation=cv2.INTER_AREA)
+        image = resized
+        #filtered = applyFilters(image)
+        image = cv2.blur(image, (3,3))
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        ret, image = cv2.threshold(image, 170, 255, cv2.THRESH_BINARY_INV)
+        kernel = np.ones((5,5), np.uint8)
+        image = cv2.erode(image, kernel, iterations=2)
+        
+        keypoints, image_blobs = BlobDetector.count_by_blobs(image, blobColor=255)
         num, marked_image = BlobDetector.get_dice_from_blobs(
-            keypoints, image)
-        cv2.imshow('dados2.jpg', marked_image)
-        cv2.moveWindow('dados2.jpg', 400,400)
+                keypoints, resized, eps=50, circle_area=35)
+        cv2.imshow('marked', marked_image)
+        #cv2.imshow('filtered_dados1', image_blobs)        
+
+        
+    else:
+        if isRedImage(image):
+            dices, array_dices = get_dices_using_contours(image)
+            cv2.imshow('dados3.png',dices)
+            for i, image in enumerate(array_dices):
+                cv2.imshow(str(i), image)
+                cv2.moveWindow(str(i), 400,400)
+                cv2.waitKey(0)
+                cv2.destroyWindow(str(i))
+
+        else:
+            dices = applyFilters(image)
+            keypoints, image_blobs = BlobDetector.count_by_blobs(dices)
+            num, marked_image = BlobDetector.get_dice_from_blobs(
+                keypoints, image)
+            cv2.imshow('dados2.jpg', marked_image)
+            cv2.moveWindow('dados2.jpg', 400,400)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

@@ -3,7 +3,7 @@ import numpy as np
 from sklearn import cluster
 from DiceCounter import Segmentation
 
-def get_dice_from_blobs(blobs, image):
+def get_dice_from_blobs(blobs, image, eps=35, circle_area=27):
     """Função para obter dados a partir dos blobs detectados
     Esta função foi utilizada para contar os pontos e depois 
     localizar os dados por clusterização
@@ -22,14 +22,14 @@ def get_dice_from_blobs(blobs, image):
             X.append(position)
     X = np.asarray(X)
     if len(X)>0:
-        clustering = cluster.DBSCAN(eps=35, min_samples=0).fit(X)
+        clustering = cluster.DBSCAN(eps=eps, min_samples=0).fit(X)
         num_dice = max(clustering.labels_) + 1
 
         for i in range(num_dice):
             X_dice = X[clustering.labels_==i]
             centroid_dice = np.mean(X_dice, axis=0)   
             position = (int(centroid_dice[0]), int(centroid_dice[1]))
-            image = cv2.circle(image, position , 27, (255,0,0), 2)
+            image = cv2.circle(image, position , circle_area, (255,0,0), 2)
             cv2.putText(
                 image, str(len(X_dice)), position, cv2.FONT_HERSHEY_PLAIN, 2,
                 (255,0,0), 2
@@ -37,8 +37,8 @@ def get_dice_from_blobs(blobs, image):
         return num_dice, image
     else:
         return None, image
-        
-def count_by_blobs(filtered_image):
+   
+def count_by_blobs(filtered_image, blobColor = 0):
     """Esta função será utilizada apenas em dados2.jpg
     
     Args:
@@ -50,7 +50,7 @@ def count_by_blobs(filtered_image):
         
     """
     params = cv2.SimpleBlobDetector_Params()
-    params.blobColor = 0
+    params.blobColor = blobColor
     params.minDistBetweenBlobs = 1
     detector = cv2.SimpleBlobDetector_create(params)
     keypoints = detector.detect(filtered_image)
